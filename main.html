@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雅可比迭代法(Jacobi Method)</title>
+  <LINK href="./image/导航.icon" rel="Shortcut Icon">
+  <!-- 引入样式 -->
+  <!--引入 element-ui 的样式，-->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 必须先引入vue，  后使用element-ui -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <!-- 引入element 的组件库-->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+</head>
+
+<body>
+  <div id="app" style="width: 80%; margin: 0 auto;">
+    <el-row>
+      <h1>雅可比迭代法(Jacobi Method)</h1>
+      <H2 style="COLOR: #2f4f4f">关于</H2>
+      <BLOCKQUOTE>
+        <UL>
+          <LI>该页面为桂林电子科技大学数学与应用数学专业本科生谭前程的作品😂
+          </LI>
+        </UL>
+        <UL>
+          <li class="non_point">
+            👉<a href="https://redhat123456.github.io/router_index/">点我查看</a>👈了解更多关于谭前程的内容🎈
+          </li>
+        </UL>
+
+
+
+        <UL>
+          <LI>为什么要写这个页面？或者为什么不用其他语言写？
+          </LI>
+        </UL>
+        <UL>
+          <li class="non_point">
+            本人自学了前端以来就比较喜欢用web前端来代替复杂的程序命令行，个人觉得页面相对于命令行来说更具表达能力，而且本人对JavaScript比较熟悉，就用了JavaScript来写这个代码。🎃
+          </li>
+        </UL>
+        <UL>
+          <li class="non_point">
+            欢迎用邮箱来联系本人✏(本人邮箱：1907065810@qq.com)，谢谢大家的支持~~！！✨
+          </li>
+        </UL>
+      </BLOCKQUOTE>
+    </el-row>
+    <el-row type="flex" id="row-bg">
+      <h2>相关知识</h2>
+    </el-row>
+    <el-row type="flex" id="row-bg">
+      <h3>Jacobi迭代公式解线性方程</h3>
+    </el-row>
+    <el-row>
+      通过线性方程组👇
+    </el-row>
+    <el-row type="flex" id="row-bg">
+      <el-image src="https://bu.dusays.com/2021/09/23/89c0cc99ce2d7.png"></el-image>
+    </el-row>
+    <el-row>
+      若 <el-image src="https://bu.dusays.com/2021/09/23/c6ce1b99d2624.png"></el-image> 方程组可同解变形为
+    </el-row>
+    <el-row>
+      <el-image src="https://bu.dusays.com/2021/09/23/c48cf94f87e5c.png"></el-image>
+    </el-row>
+    <el-row>
+      Jacobi迭代法的计算公式：
+    </el-row>
+    <el-row>
+      <el-image src="https://bu.dusays.com/2021/09/23/260eb09c476b4.png"></el-image>
+    </el-row>
+    <el-row>
+      即 <el-image src="https://bu.dusays.com/2021/09/23/8157803351e31.png"></el-image>
+    </el-row>
+    <el-row type="flex" id="row-bg">
+      <h2>设置变量</h2>
+    </el-row>
+
+    <el-row type="flex" id="row-bg">
+      <el-col :span="3">
+        <div id="zhengwen">
+          精确值：
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <el-input placeholder="请输入精确值" v-model="exact" clearable>
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-row type="flex" id="row-bg" style="margin-top: 20px;">
+      <el-col :span="6">
+        <div id="zhengwen">
+          请输入方程组未知数的个数n：
+        </div>
+      </el-col>
+      <el-col :span="3">
+        <el-input placeholder="请输入n" v-model="n" clearable>
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-row type="flex" id="row-bg" style="margin-top: 20px;">
+      <el-col :span="3">
+        <div id="zhengwen">
+          矩阵A：
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <el-input type="textarea" placeholder="例：[1,1,1,2]" v-model="textarea">
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-row type="flex" id="row-bg" style="margin-top: 20px;">
+      <el-col :span="3">
+        <div id="zhengwen">
+          矩阵b：
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <el-input type="textarea" placeholder="例：[1,1,1,2]" v-model="b">
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-button @click="show" type="primary">
+        运算
+      </el-button>
+
+    </el-row>
+    <el-row>
+      <h2>运算结果：</h2>
+    </el-row>
+
+    <el-row>
+      <div v-if="state == '0'"></div>
+      <div v-else-if="state == '1'">
+        <div title="tip">运算结果很快出来...</div>
+        <div title="tip">请耐心等待...</div>
+        <div title="tip">>>></div>
+      </div>
+      <div v-else-if="state == '2'">
+        运算成功！！！
+        你输入的A矩阵为：
+        <div v-html="formatMatrix(List)" id="A">
+        </div>
+
+      </div>
+      <div v-else>
+        迭代失败！（可能是函数不收敛）
+      </div>
+    </el-row>
+  </div>
+
+</body>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        textarea: [10, -1, -2, -1, 10, -2, -1, -2, 5],
+        b: [7.2, 8.3, 4.2],
+        state: '0',
+        A1: '',
+        exact: 0.00001,
+        n: 3,
+        List: '',
+        k: ''
+      }
+    },
+    methods: {
+      show() {
+        this.state = '1';
+        this.operation();
+      },
+      operation() {
+        var n = this.n;
+        var A = new Array();
+        var A1 = new Array();
+        A1 = this.textarea;
+        var List = new Array();
+        var B = new Array();
+        B = this.b;
+        var X = new Array();
+        var Y = new Array();
+        var D = new Array();
+        var k = 0;
+        var t = 0;
+        for (let i = 0; i < n; i++) {
+          A[i] = new Array();
+          for (let j = 0; j < n; j++) {
+            A[i][j] = A1[t]
+            t++;
+          }
+        }
+        for (var t = 0; t < n; t++) {
+          X[t] = 0;
+          Y[t] = 0;
+          D[t] = 0;
+        }
+        do {
+          X = Y.concat();
+          for (var i = 0; i < n; i++) {
+            let tem = 0.0;
+            for (var j = 0; j < n; j++) {
+              if (i !== j) { tem = tem + A[i][j] * X[j] }
+              console.log(tem)
+            }
+            Y[i] = (B[i] - tem) / A[i][i];
+          }
+          k++;
+          if (k > 100) {
+            console.log('迭代失败！（可能是函数不收敛）')
+            this.state = 3;
+            return;
+          }
+          for (var a = 0; a < n; a++) {
+
+            D[a] = X[a] - Y[a]
+          }
+          List.push(Y.concat())
+          console.log('D:' + D)
+        } while (this.MaxfList(D) > 0.00001 || this.MaxfList(D) < -0.00001)
+        console.log(k)
+        console.log(List)
+        this.state = 2;
+        for (var i = 0; i < List.length; i++) {
+        }
+        this.List = List;
+        this.A1 = A;
+        this.k = k;
+        this.func(List);
+        return
+      },
+      MaxfList(x) {
+        var max = x[0]
+        var n = x.length
+        for (var i = 0; i < n; i++)
+          if (x[i] > max) max = x[i]
+        return max;
+      },
+      formatMatrix(matrixArr) {
+        return `
+          ${this.A1.map(arr => arr.join(" ")).join("</br>")}
+          </br>
+          迭代结果：
+          <pre>${matrixArr.map((arr, index) => `第 ${index + 1} 次迭代：\t` + arr.join('\t')).join('</br>')}</pre>
+          迭代次数： ${this.k}
+        `
+      }
+    },
+
+  })
+</script>
+
+<style type="text/css">
+  .app {
+    width: 80%;
+    height: 100%;
+  }
+
+  .row-bg {
+    margin: 0px 0px 22px;
+  }
+
+  .non_point {
+    list-style: none;
+  }
+</style>
+
+</html>
